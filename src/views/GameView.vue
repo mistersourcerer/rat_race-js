@@ -21,14 +21,13 @@ let player,
 
 const app = new Application()
 
-// Função para inicializar o jogo
 function setup() {
-  // Cria o chão (movimento de baixo para cima)
+  // tiles for moving ground
   for (let i = 0; i < 7; i++) {
     const groundTile = new Sprite(Texture.WHITE)
     groundTile.width = app.screen.width
     groundTile.height = 100
-    groundTile.tint = 0xbfa4a7 // Cor verde para o chão
+    groundTile.tint = 0xbfa4a7
     groundTile.x = 0
     groundTile.y = app.screen.height - i * (groundTile.height + 10)
     groundTiles.push(groundTile)
@@ -37,21 +36,17 @@ function setup() {
 
   laneWidth = app.screen.width / lanesCount
 
-  // Cria o jogador (um quadrado simples)
+  // squared player
   player = new Sprite(Texture.WHITE)
   player.width = 50
   player.height = 50
-  player.tint = 0xff0000 // Cor vermelha para o jogador
-
+  player.tint = 0xff0000
   player.x = playerPosX(currentLane, player)
   player.y = app.screen.height - player.height * 2
 
   app.stage.addChild(player)
-
-  // Eventos de tecla
   window.addEventListener('keydown', onKeyDown)
 
-  // Inicia o loop do jogo
   app.ticker.add(gameLoop)
 }
 
@@ -59,7 +54,6 @@ function playerPosX(lane, player) {
   return laneWidth * (lane + 1) - laneWidth / 2 - player.width / 2
 }
 
-// Função para manipular eventos de tecla
 function onKeyDown(e) {
   if (e.code === 'KeyW' && !isJumping) {
     isJumping = true
@@ -87,19 +81,17 @@ const keyMapping = {
   KeyD: directions.RIGHT
 }
 
-// Função principal do jogo
 function gameLoop(delta) {
   moveGround()
   handleJump()
   move()
 }
 
-// Função para mover o chão de baixo para cima
 function moveGround() {
   for (let i = 0; i < groundTiles.length; i++) {
     groundTiles[i].y += speed
 
-    // Reposiciona o tile do chão para a parte de baixo se sair da tela
+    // tile exiting the screen
     if (groundTiles[i].y >= app.screen.height + groundTiles[i].height) {
       groundTiles[i].y = -groundTiles[i].height
     }
@@ -146,15 +138,13 @@ function move() {
   }
 }
 
-// Função para controlar o pulo do jogador
 function handleJump() {
   if (isJumping) {
     player.y += jumpVelocity
     jumpVelocity += gravity
 
-    // Verifica se o jogador atingiu o chão
-   
-    if (player.y >= (app.screen.height - player.height * 2)) {
+    // checking if player has landed
+    if (player.y >= app.screen.height - player.height * 2) {
       player.y = app.screen.height - player.height * 2
       isJumping = false
     }
@@ -168,7 +158,7 @@ onMounted(async () => {
   await app.init({ background: '#ffffff', width: 800, height: 600 })
   document.getElementById('game').appendChild(app.canvas)
   document.body.appendChild(app.canvas)
-  // Inicia o jogo
+
   setup()
 })
 </script>
